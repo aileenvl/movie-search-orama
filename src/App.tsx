@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { OramaClient } from '@oramacloud/client';
 import { Search, Film, MessageSquare } from 'lucide-react';
 import { MovieCard } from './components/MovieCard';
-import { ChatInterface } from './components/ChatInterface';
-import { movies } from './data/movies';
 import type { Movie } from './types';
+import { OramaChatBox } from '@orama/react-components';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [yearFilter, setYearFilter] = useState<string>('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'search' | 'chat'>('search');
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
   const [client, setClient] = useState<OramaClient | null>(null);
-
-  const years = [...new Set(movies.map(movie => movie.year))].sort();
-  const categories = [...new Set(movies.map(movie => movie.category))];
 
   useEffect(() => {
     const initializeOrama = async () => {
@@ -44,22 +38,14 @@ function App() {
         term: searchTerm,
         mode: 'fulltext'
       });
-      console.log(searchResults);
+
       results = searchResults.hits.map(hit => hit.document as Movie);
-
-      if (yearFilter) {
-        results = results.filter(movie => movie.year === parseInt(yearFilter));
-      }
-
-      if (categoryFilter) {
-        results = results.filter(movie => movie.category === categoryFilter);
-      }
 
       setSearchResults(results);
     };
 
     performSearch();
-  }, [searchTerm, yearFilter, categoryFilter, client]);
+  }, [searchTerm,client]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -105,26 +91,6 @@ function App() {
                     />
                   </div>
                 </div>
-                <select
-                  value={yearFilter}
-                  onChange={(e) => setYearFilter(e.target.value)}
-                  className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">All Years</option>
-                  {years.map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">All Categories</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
               </div>
             </div>
 
@@ -135,7 +101,18 @@ function App() {
             </div>
           </>
         ) : (
-          <ChatInterface movies={movies} />
+          <OramaChatBox
+            index={{
+              endpoint: import.meta.env.VITE_ORAMA_ENDPOINT,
+              api_key: import.meta.env.VITE_ORAMA_API_KEY
+            }}
+            sourcesMap={{
+              title: 'name',
+              description: 'content',
+              path: 'url'
+            }}
+            className="h-[600px] rounded-lg overflow-hidden"
+          />
         )}
       </div>
     </div>
