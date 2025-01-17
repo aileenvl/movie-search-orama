@@ -35,7 +35,7 @@ A React-based application that allows users to search for movies and chat about 
 
 - **[Orama Search](https://orama.com/)** - Lightning-fast full-text search engine
 - **[Bolt](https://bolt.new/)** AI-Powered Full-Stack Web Development in the Browser
-- **[Kaggle Dataset](https://www.kaggle.com/datasets/yashgupta24/48000-movies-dataset)** - Comprehensive Adidas product catalog
+- **[Kaggle Dataset](https://www.kaggle.com/datasets/yashgupta24/48000-movies-dataset)** - Movies Dataset
 
 
 
